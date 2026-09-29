@@ -1,3 +1,6 @@
 [submodule "hal_interface"]
 	path = hal/interface
 	url = git@github.com:fmsantos8/hal_interface.git
+[submodule "hal/ports/stm32f4"]
+	path = hal/ports/stm32f4
+	url = git@github.com:fmsantos8/stm32f4.git
