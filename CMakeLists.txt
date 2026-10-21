@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.20)
 
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
-set(CMAKE_C_COMPILER_FORCED TRUE)
-set(CMAKE_CXX_COMPILER_FORCED TRUE)
 
 # Set target definition variables required by the toolchain file
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/target.cmake)
@@ -27,6 +25,8 @@ add_executable(${PROJECT_NAME})
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/components.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/files.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/stm32f4.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/boards.cmake)
 
 # Add sources to executable/library
 target_sources(${PROJECT_NAME} PRIVATE
