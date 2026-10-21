@@ -4,3 +4,6 @@
 [submodule "hal/ports/stm32f4"]
 	path = hal/ports/stm32f4
 	url = git@github.com:fmsantos8/stm32f4.git
+[submodule "hal/memory"]
+	path = hal/memory
+	url = git@github.com:fmsantos8/memory.git
