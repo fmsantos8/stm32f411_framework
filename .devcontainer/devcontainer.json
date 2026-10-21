@@ -1,0 +1,22 @@
+{
+    "name": "STM32F411 framework",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cmake-tools",
+                "ms-vscode.cpptools"
+            ],
+            "settings": {
+                "cmake.cmakePath": "cmake",
+                "cmake.configureArgs": [],
+                "cmake.useCMakePresets": "always",
+                "C_Cpp.default.compilerPath": "/opt/arm-gnu-toolchain/bin/arm-none-eabi-gcc",
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    }
+}

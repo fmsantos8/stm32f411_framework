@@ -16,10 +16,40 @@
  ******************************************************************************
  */
 
-#include <stdint.h>
+#include <stddef.h>
+#include <stdatomic.h>
+
+#include "bsp.h"
+#include "system/hal_system.h"
+
+_Alignas(max_align_t) static unsigned char hal_storage[2048];
+static bsp_resources_t board;
+static _Atomic uint32_t timer_notifications;
+
+_Static_assert(ATOMIC_INT_LOCK_FREE == 2, "Timer callback requires a lock-free counter");
+
+static void timer_tick(void) {
+    atomic_fetch_add_explicit(&timer_notifications, 1, memory_order_relaxed);
+}
 
 int main(void)
 {
-    /* Loop forever */
-	for(;;);
+    const hal_system_config_t config = {
+        .memory_buffer = hal_storage,
+        .memory_capacity = (uint32_t)sizeof(hal_storage),
+    };
+    if (hal_system_init(&config) != HAL_STATUS_OK) {
+        for (;;) {}
+    }
+
+    if (bsp_init(timer_tick, &board) != HAL_STATUS_OK) {
+        for (;;) {}
+    }
+    if (hal_system_seal() != HAL_STATUS_OK) {
+        for (;;) {}
+    }
+    if (hal_timer_start(board.timebase_timer) != HAL_STATUS_OK) {
+        for (;;) {}
+    }
+    for (;;) {}
 }
