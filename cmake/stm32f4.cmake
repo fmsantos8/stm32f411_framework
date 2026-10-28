@@ -21,13 +21,13 @@ foreach(required_file
             "Initialize the CMSIS device and HAL submodules, or use tools/install_stm32f4_sdk.py.")
     endif()
 endforeach()
-set(STM32F4_PORT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/hal/ports/stm32f4")
+set(STM32F4_PORT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/hal/ports/stm32f4")
 
 target_compile_features(${PROJECT_NAME} PRIVATE c_std_11)
 target_compile_definitions(${PROJECT_NAME} PRIVATE STM32F411xE USE_HAL_DRIVER)
 target_include_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/hal/interface"
-    "${CMAKE_CURRENT_SOURCE_DIR}/hal/memory"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/hal/interface"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/hal/memory"
     "${STM32F4_PORT_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/config"
 )
@@ -37,7 +37,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
     "${STM32F4_DEVICE_DIR}/Include"
 )
 target_sources(${PROJECT_NAME} PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/hal/memory/hal_memory.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/hal/memory/hal_memory.c"
     "${STM32F4_PORT_DIR}/hal_stm32f4.c"
     "${STM32F4_PORT_DIR}/system/hal_system.c"
     "${STM32F4_PORT_DIR}/gpio/hal_gpio.c"

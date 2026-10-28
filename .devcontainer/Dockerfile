@@ -4,7 +4,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        build-essential ca-certificates curl git python3 xz-utils \
+        build-essential ca-certificates curl git python3 python3-serial xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # The official toolchain archive below targets a Linux x86_64 host.
