@@ -69,6 +69,12 @@ __attribute__((weak)) int _read(int file, char *ptr, int len)
   (void)file;
   int DataIdx;
 
+  if (len > 0 && __io_getchar == NULL)
+  {
+    errno = ENOSYS;
+    return -1;
+  }
+
   for (DataIdx = 0; DataIdx < len; DataIdx++)
   {
     *ptr++ = __io_getchar();
@@ -81,6 +87,14 @@ __attribute__((weak)) int _write(int file, char *ptr, int len)
 {
   (void)file;
   int DataIdx;
+
+  /* No SDK console is installed; do not jump through an unresolved weak hook
+     when the C library tries to print an assertion diagnostic. */
+  if (len > 0 && __io_putchar == NULL)
+  {
+    errno = ENOSYS;
+    return -1;
+  }
 
   for (DataIdx = 0; DataIdx < len; DataIdx++)
   {

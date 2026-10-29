@@ -10,16 +10,16 @@
       "toolchain_prefix": "",
       "sources": [
         {
-          "path": "Src/syscall.c"
+          "path": "src/platform/stm32f411/syscall.c"
         },
         {
-          "path": "Src/sysmem.c"
+          "path": "src/platform/stm32f411/sysmem.c"
         },
         {
-          "path": "Src/main.c"
+          "path": "src/main.c"
         },
         {
-          "path": "Src/startup_stm32f411xx.S"
+          "path": "src/platform/stm32f411/startup_stm32f411xx.S"
         }
       ],
       "tools": [
@@ -39,7 +39,6 @@
             "-O0",
             "-g3",
             "-ggdb",
-            "-IInc",
             "-DRTE_DEVICE_STARTUP_STM32F4XX",
             "-DDEBUG",
             "-x",
@@ -64,7 +63,6 @@
             "-O0",
             "-g3",
             "-ggdb",
-            "-IInc",
             "-DRTE_DEVICE_STARTUP_STM32F4XX",
             "-DDEBUG"
           ]
@@ -85,7 +83,6 @@
             "-O0",
             "-g3",
             "-ggdb",
-            "-IInc",
             "-DRTE_DEVICE_STARTUP_STM32F4XX",
             "-DDEBUG",
             "-fno-rtti",
@@ -122,16 +119,16 @@
       "toolchain_prefix": "",
       "sources": [
         {
-          "path": "Src/syscall.c"
+          "path": "src/platform/stm32f411/syscall.c"
         },
         {
-          "path": "Src/sysmem.c"
+          "path": "src/platform/stm32f411/sysmem.c"
         },
         {
-          "path": "Src/main.c"
+          "path": "src/main.c"
         },
         {
-          "path": "Src/startup_stm32f411xx.S"
+          "path": "src/platform/stm32f411/startup_stm32f411xx.S"
         }
       ],
       "tools": [
@@ -149,7 +146,6 @@
             "-Wpedantic",
             "-Wno-unused-parameter",
             "-Os",
-            "-IInc",
             "-DRTE_DEVICE_STARTUP_STM32F4XX",
             "-x",
             "assembler-with-cpp",
@@ -171,7 +167,6 @@
             "-Wpedantic",
             "-Wno-unused-parameter",
             "-Os",
-            "-IInc",
             "-DRTE_DEVICE_STARTUP_STM32F4XX"
           ]
         },
@@ -189,7 +184,6 @@
             "-Wpedantic",
             "-Wno-unused-parameter",
             "-Os",
-            "-IInc",
             "-DRTE_DEVICE_STARTUP_STM32F4XX",
             "-fno-rtti",
             "-fno-exceptions",

@@ -1,7 +1,3 @@
-/**
- * @file bsp.c
- * @brief Black Pill STM32F411CEU6 resources for the framework bench wiring.
- */
 #include "bsp.h"
 
 #include <stddef.h>
@@ -30,7 +26,7 @@ static hal_status_t init_led(hal_gpio_t **led, bool active_level) {
 
 static hal_status_t init_i2c(hal_i2c_t **i2c) {
     const hal_i2c_config_t config = {
-        .instance = 0, // I2C1.
+        .instance = 0,
         .clock_pin = {.port = 1, .number = 6},
         .data_pin = {.port = 1, .number = 7},
         .frequency = 100000,
@@ -41,7 +37,7 @@ static hal_status_t init_i2c(hal_i2c_t **i2c) {
 
 static hal_status_t init_uart(hal_uart_t **uart) {
     const hal_uart_config_t config = {
-        .instance = 1, // USART2.
+        .instance = 1,
         .transmit_pin = {.port = 0, .number = 2},
         .receive_pin = {.port = 0, .number = 3},
         .baudrate = 115200,
@@ -55,15 +51,15 @@ static hal_status_t init_uart(hal_uart_t **uart) {
 
 static hal_status_t init_timer(hal_timer_t **timer, hal_timer_callback_t callback) {
     const hal_timer_config_t config = {
-        .instance = 0, // TIM2.
+        .instance = 0,
         .period = 1,
         .callback = callback,
     };
     return hal_timer_config(timer, &config);
 }
 
-hal_status_t bsp_init(hal_timer_callback_t timer_callback, bsp_resources_t *out_resources) {
-    if (timer_callback == NULL || out_resources == NULL) {
+hal_status_t bsp_init(hal_timer_callback_t timer_callback, bsp_resources_t *resources) {
+    if (timer_callback == NULL || resources == NULL) {
         return HAL_STATUS_INVALID_ARGUMENT;
     }
     if (init_attempted) {
@@ -71,29 +67,29 @@ hal_status_t bsp_init(hal_timer_callback_t timer_callback, bsp_resources_t *out_
     }
     init_attempted = true;
 
-    bsp_resources_t resources = {
+    bsp_resources_t configured_resources = {
         .button_active_level = false,
         .led_active_level = true,
         .sht31_address = 0x44,
         .ssd1306_address = 0x3C,
     };
 
-    hal_status_t status = init_led(&resources.led, resources.led_active_level);
+    hal_status_t status = init_led(&configured_resources.led, configured_resources.led_active_level);
     if (status == HAL_STATUS_OK) {
-        status = init_button(&resources.button);
+        status = init_button(&configured_resources.button);
     }
     if (status == HAL_STATUS_OK) {
-        status = init_i2c(&resources.devices_i2c);
+        status = init_i2c(&configured_resources.devices_i2c);
     }
     if (status == HAL_STATUS_OK) {
-        status = init_uart(&resources.telemetry_uart);
+        status = init_uart(&configured_resources.telemetry_uart);
     }
     if (status == HAL_STATUS_OK) {
-        status = init_timer(&resources.timebase_timer, timer_callback);
+        status = init_timer(&configured_resources.timebase_timer, timer_callback);
     }
     if (status == HAL_STATUS_OK) {
         // Publish the handles only after every resource has been constructed.
-        *out_resources = resources;
+        *resources = configured_resources;
     }
     return status;
 }
