@@ -62,6 +62,7 @@ cmake --build --preset Release
 ```
 
 ELF: `build/<configuração>/stm32f411_framework.elf`.
+A imagem binária para gravação fica no mesmo diretório, com extensão `.bin`.
 A integração fica em `cmake/stm32f4.cmake`, fora dos arquivos gerenciados pela
 extensão STM32Cube. A seleção do BSP fica em `cmake/boards.cmake`. O arquivo
 `config/stm32f4xx_hal_conf.h` continua no projeto, pois configura os módulos HAL
@@ -121,3 +122,32 @@ e comunicação real ainda exigem placa e periféricos.
 O terceiro verifica o contrato do BSP com falhas em cada etapa de construção:
 LED apagado primeiro, configurações da bancada, preservação da saída e rejeição
 de uma segunda tentativa após sucesso ou falha.
+
+## Gravar com ST-LINK/V2
+
+Instale `stlink-tools` no host com `sudo apt install stlink-tools` e conecte SWDIO, SWCLK, GND e alimentação de
+referência do ST-LINK/V2 à placa. Depois de compilar, execute no host:
+
+```sh
+./scripts/upload.sh
+```
+
+O script grava `build/Debug/stm32f411_framework.bin` em `0x08000000` e reinicia
+o microcontrolador. Use `-B build/Release` para a configuração Release. O
+ST-LINK/V2 (`0483:3748`) não fornece porta serial: para abrir o monitor USART2,
+conecte um adaptador USB-UART separado e use `--monitor --port /dev/ttyUSB0`.
+Se preferir STM32CubeProgrammer, use `--tool cube`.
+
+Se `st-flash` informar `libusb requires write access to USB device nodes`,
+recarregue as regras instaladas por `stlink-tools` e desconecte/reconecte o
+ST-LINK/V2:
+
+```sh
+sudo udevadm control --reload-rules
+ls -l /dev/bus/usb/001/008  # ajuste o caminho conforme o lsusb atual
+./scripts/upload.sh
+```
+
+A regra `49-stlinkv2.rules` do pacote cobre o ID `0483:3748` e deve deixar o nó
+USB com permissão de escrita. Se o número do dispositivo mudar ao reconectar,
+use o novo caminho exibido por `lsusb`.
