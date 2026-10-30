@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <stddef.h>
 #include <stdint.h>
 
 #include "acquisition/app_acquisition.h"
@@ -12,17 +11,13 @@
 #include "cmp_telemetry_config.h"
 #include "gui/app_gui.h"
 #include "status_led/app_status_led.h"
-#include "system/hal_system.h"
 #include "telemetry/app_telemetry.h"
 
 #ifdef NDEBUG
 #error "This firmware requires assertions to be enabled"
 #endif
 
-#define HAL_STORAGE_CAPACITY 2048U /** HAL Memory Arena Storage (bytes) */
-
-static _Alignas(max_align_t) unsigned char hal_storage[HAL_STORAGE_CAPACITY]; /** Shared HAL arena storage. */
-static volatile uint32_t tick_counter = 0;                                    /** Single ISR writer; aligned 32-bit reads on this single-core MCU. */
+static volatile uint32_t tick_counter = 0; /** Single ISR writer; aligned 32-bit reads on this single-core MCU. */
 
 static bsp_resources_t board; /** Resources constructed by the selected board. */
 static led_t led;             /** Status LED component context. */
@@ -37,18 +32,6 @@ static void timer_tick(void) {
 
 static uint32_t get_ticks(void) {
     return tick_counter;
-}
-
-static void init_platform(void) {
-    const hal_system_config_t system_config = {
-        .memory_buffer = hal_storage,
-        .memory_capacity = (uint32_t)sizeof(hal_storage),
-        .cpu_clock = 100000000U,
-    };
-    assert(hal_system_init(&system_config) == HAL_STATUS_OK);
-
-    assert(bsp_init(timer_tick, &board) == HAL_STATUS_OK);
-    assert(hal_system_seal() == HAL_STATUS_OK);
 }
 
 static void init_components(void) {
@@ -92,7 +75,7 @@ static void init_application(void) {
 }
 
 int main(void) {
-    init_platform();
+    assert(bsp_init(timer_tick, &board) == HAL_STATUS_OK);
     init_components();
     init_application();
 

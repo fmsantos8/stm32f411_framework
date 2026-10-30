@@ -1,6 +1,11 @@
 #include "bsp.h"
 
+#include <assert.h>
 #include <stddef.h>
+
+#define HAL_STORAGE_CAPACITY 2048U /** HAL Memory Arena Storage (bytes) */
+
+static _Alignas(max_align_t) unsigned char hal_storage[HAL_STORAGE_CAPACITY]; /** Shared HAL arena storage. */
 
 /** @brief A construction attempt reserves resources until firmware restart. */
 static bool init_attempted = false;
@@ -58,6 +63,15 @@ static hal_status_t init_timer(hal_timer_t **timer, hal_timer_callback_t callbac
     return hal_timer_config(timer, &config);
 }
 
+static void init_system(void) {
+    const hal_system_config_t system_config = {
+        .memory_buffer = hal_storage,
+        .memory_capacity = (uint32_t)sizeof(hal_storage),
+        .cpu_clock = 100000000U,
+    };
+    assert(hal_system_init(&system_config) == HAL_STATUS_OK);
+}
+
 hal_status_t bsp_init(hal_timer_callback_t timer_callback, bsp_resources_t *resources) {
     if (timer_callback == NULL || resources == NULL) {
         return HAL_STATUS_INVALID_ARGUMENT;
@@ -66,6 +80,8 @@ hal_status_t bsp_init(hal_timer_callback_t timer_callback, bsp_resources_t *reso
         return HAL_STATUS_INVALID_STATE;
     }
     init_attempted = true;
+
+    init_system();
 
     bsp_resources_t configured_resources = {
         .button_active_level = false,
@@ -91,5 +107,8 @@ hal_status_t bsp_init(hal_timer_callback_t timer_callback, bsp_resources_t *reso
         // Publish the handles only after every resource has been constructed.
         *resources = configured_resources;
     }
+
+    assert(hal_system_seal() == HAL_STATUS_OK);
+
     return status;
 }

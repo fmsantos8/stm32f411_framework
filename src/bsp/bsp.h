@@ -12,6 +12,7 @@
 #include "common/hal_status.h"
 #include "gpio/hal_gpio.h"
 #include "i2c/hal_i2c.h"
+#include "system/hal_system.h"
 #include "timer/hal_timer.h"
 #include "uart/hal_uart.h"
 
@@ -42,8 +43,10 @@ typedef struct {
 /**
  * @brief Construct the selected board's hardware resources once.
  *
- * @details Call sequentially in normal context between hal_system_init() and
- * hal_system_seal(). Configures the LED off first and leaves the timer stopped;
+ * @details Call once at startup in normal context. Initializes the system with
+ * BSP-owned arena storage, constructs the resources and seals the arena.
+ * System initialization and arena sealing must succeed (asserted).
+ * Configures the LED off first and leaves the timer stopped;
  * initialize callback data before starting it. Invalid arguments allow retry.
  * Once construction starts, further attempts are rejected even after failure;
  * restart firmware to retry. Failure may consume arena space and reserve hardware.
@@ -57,7 +60,6 @@ typedef struct {
  * @retval HAL_STATUS_INVALID_ARGUMENT timer_callback or resources is NULL.
  * @retval HAL_STATUS_INVALID_STATE Construction has already been attempted, or
  * HAL resource construction is closed.
- * @retval HAL_STATUS_NOT_INITIALIZED The system has not been initialized.
  * @retval HAL_STATUS_NOT_SUPPORTED A board configuration is unavailable.
  * @retval HAL_STATUS_RESOURCE_BUSY A required hardware resource is already claimed.
  * @retval HAL_STATUS_NO_MEMORY HAL or SDK object storage is unavailable.
